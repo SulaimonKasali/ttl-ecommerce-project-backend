@@ -7,7 +7,10 @@ router.get('/', function(req,res){
 });
 
 router.get('/products', ProductController.getProducts);
-    
+router.get('/products/:id', ProductController.getProductById);
+router.post('/products', ProductController.createProduct);    
+router.patch('/products', ProductController.updateProduct);
+router.delete('/products/:id', ProductController.deleteProduct);
 
 
 module.exports  = router;
