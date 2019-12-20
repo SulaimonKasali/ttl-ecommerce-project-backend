@@ -1,53 +1,54 @@
+const Product = require('../models/Product')
+
 exports.getProducts = (req,res)=>{
+Product.find().then(products =>{
+    return res.status(200).send(products)
+    }).catch(error =>{
+        return res.status(400).send(error)
+    })
+   };
 
-    let products = [
+    exports.getProductById=(req,res)=>{
+        Product.findById(req.params.id)
+        .populate('category')
+        .then(product=>{
+            return res.status(200).send(product);
+        }).catch(error=>{
+            return res.status(400).send(error);
 
-        {
-        img:'htt',
-        name:'Phone',
-        price:2000,
-        description:'Phone Description'},
-
-        {
-            img:'htt',
-            name:'Phone',
-            price:2000,
-            description:'Phone Description'},
-        
-        {
-            img:'htt',
-            name:'Phone',
-            price:2000,
-            description:'Phone Description'},
-            
-        {
-            img:'htt',
-            name:'Phone',
-            price:2000,
-            description:'Phone Description'},
-                
-            {
-            img:'htt',
-            name:'Phone',
-            price:2000,
-            description:'Phone Description'}
-    ]
-
-    res.send(products);
-};
-
-    exports.getProductById = (req,res) =>{
-        res.status(200).send('Get Product by Id here');
+        })
     };
 
-    exports.createProduct = (req,res) =>{
-        res.status(200).send('Create Product Here');
-    };
 
-    exports.updateProduct = (req,res) =>{
-        res.status(200).send('This API endpoint updates a product');
+    exports.createProduct = (req,res)=>{
+        Product.create(req.body).then((product)=>{
+            return res.status(200).send({
+                message:'product created successfully',
+                product});
+        }).catch(error =>{
+            return res.status(400).send(error);
+        })
     };
+     
+ 
+    exports.updateProduct = (req,res)=>{
+        Product.findByIdAndUpdate(req.body.id,req.body)
+        .then(()=>{
+            return Product.findById(req.body.id)
+            .then(product =>{
+                return res.status(200).send(product);
+            })
+            }).catch(error =>{
+            return res.status(400).send(error)
+        })
+    };
+     
 
-    exports.deleteProduct = (req,res) =>{
-        res.status(200).send('This API endpoint deletes a product');
+    exports.deleteProduct = (req,res)=>{
+        Product.deleteOne({_id:req.params.id})
+        .then(()=>{
+            res.status(200).send('Product deleted successfully');
+            }).catch(error =>{
+            return res.status(400).send(error);
+        })
     };
